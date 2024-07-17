@@ -8,22 +8,19 @@ var celular_input = document.getElementById("celular");
 var cedula_input = document.getElementById("cedula");
 
 formulario.addEventListener("submit", function (e) {
+    e.preventDefault(); // Siempre prevenir el envío por defecto
+
     if (
-        formulario.checkValidaty() &&
         validarHoras_disponibles() &&
-        validarTipo_contrato() &&
         validarCorreo() &&
         validarEspecializacion() &&
         validarCelular() &&
         validarCedula()
     ) {
-        return true;
+        formulario.submit(); // Enviar el formulario si todo es válido
     } else {
-        event.preventDefault();
-        event.stopPropagation();
+        formulario.classList.add("was-validated");
     }
-
-    formulario.classList.add("was-validated");
 });
 
 //validar 1 o maximo 2 numeros
@@ -105,7 +102,7 @@ function validarCedula() {
 
     // Validar que la cédula tenga 10 dígitos y sean números
     if (!regexCedula.test(cedula)) {
-        mostrarError("Por favor, ingresa exactamente diez números.");
+        mostrarError("Por favor, ingresa un número de cédula válido.");
         return false;
     }
 
@@ -145,7 +142,7 @@ function validarCedula() {
     }
 
     // La cédula es válida
-    mostrarExito("Cédula válida");
+    //mostrarExito("Cédula válida");
     return true;
 
     // Función para mostrar mensaje de error
@@ -157,7 +154,7 @@ function validarCedula() {
 
     // Función para mostrar mensaje de éxito
     function mostrarExito(mensaje) {
-        cedula_input.nextElementSibling.innerHTML = mensaje;
+        //cedula_input.nextElementSibling.innerHTML = mensaje;
         cedula_input.classList.remove("is-invalid");
         cedula_input.classList.add("is-valid");
     }
@@ -168,3 +165,13 @@ correo_input.addEventListener("input", validarCorreo);
 especializacion_input.addEventListener("input", validarEspecializacion);
 celular_input.addEventListener("input", validarCelular);
 cedula_input.addEventListener("input", validarCedula);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        validarHoras_disponibles,
+        validarCorreo,
+        validarEspecializacion,
+        validarCelular,
+        validarCedula
+    };
+}

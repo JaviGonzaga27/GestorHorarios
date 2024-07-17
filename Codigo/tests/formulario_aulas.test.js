@@ -1,6 +1,6 @@
 const { validarcod_aula, validarCapacidad, validarBloque } = require('../js/formulario_aulas.js');
 
-describe('Validaciones de formulario', () => {
+describe('Validaciones de formulario_aulas', () => {
     let cod_aula_input, capacidad_input, bloque_input;
 
     beforeEach(() => {

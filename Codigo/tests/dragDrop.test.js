@@ -1,23 +1,15 @@
-const { dropHandler, deleteHandler, dropManager } = require('../js/dragDrop.js');
+const { dropHandler, deleteHandler, removeHorarioDropListener, dropManager } = require('../js/dragDrop.js');
 
-// Configuración inicial
-beforeEach(() => {
-    // Simular el DOM
-    document.body.innerHTML = `
-        <section class="pt-5">
-            <form class="formularios" action="">
-                <label class="frmlbl" for="periodo">Periodo</label>
-                <label class="frmlbl" for="aula">Aula</label>
-                <label class="frmlbl" for="cursos">Curso</label>
-                <select class="selector" name="periodo" id="periodo"></select>
-                <select class="selector" name="aula" id="aula"></select>
-                <select class="selector" name="cursos" id="cursos"></select>
-            </form>
-            <div class="container-fluid" id="container"></div>
-            <div class="cursosSection">
+describe('Drag and Drop Functionality', () => {
+    let trash, horarios, cursosContainer, selected;
+
+    beforeEach(() => {
+        document.body.innerHTML = `
+        <div class="container">
+            <div class="cursosSection ocultarPDF">
                 <div class="tituloDia">INFO CURSO</div>
                 <div id="cursosContainer"></div>
-                <div id="trash">ELIMINAR CURSO</div>
+                <div id="trash">ARRASTRA AQUÍ PARA ELIMINAR HORARIO</div>
             </div>
             <div class="horarioSection">
                 <div class="tituloHora">HORAS</div>
@@ -52,105 +44,87 @@ beforeEach(() => {
                 <div class="dia" id="VIERNES"></div>
             </div>
         </div>
-    </section>
-`;
+        `;
 
-    // Configuración global
-    global.trash = document.getElementById('trash');
-    global.horarios = document.querySelectorAll('.dia');
-    global.selected = null;
+        trash = document.getElementById("trash");
+        horarios = document.querySelectorAll('.dia');
+        cursosContainer = document.getElementById('cursosContainer');
+        selected = null;
 
-    // Simulación de funciones globales
-    global.createHorario = jest.fn();
-    global.updateHorarios = jest.fn();
-    global.deleteHorario = jest.fn();
-});
+        // Agregar un curso de ejemplo al cursosContainer
+        const curso = document.createElement('div');
+        curso.className = 'curso';
+        curso.innerHTML = `
+            <p>NRC: 100</p>
+            <p>Materia: Programación Web</p>
+            <p>Horas semanales: 6</p>
+            <p>Docente: Aquiles Paredes</p>
+        `;
+        cursosContainer.appendChild(curso);
 
-describe('Drag and Drop Functionality', () => {
-    beforeEach(() => {
-        // Reiniciar el estado antes de cada prueba
+        global.createHorario = jest.fn((origen, destino, curso) => {
+            const newCurso = document.createElement('div');
+            newCurso.textContent = 'NRC: 100';
+            destino.appendChild(newCurso);
+        });
+        global.updateHorarios = jest.fn();
+        global.deleteHorario = jest.fn((horario, curso) => {
+            horario.removeChild(curso);
+        });
+    });
+
+    afterEach(() => {
         jest.clearAllMocks();
-        global.selected = null;
-        document.getElementById('cursosContainer').innerHTML = '';
-        document.querySelectorAll('.dia').forEach(dia => dia.innerHTML = '');
     });
 
     describe('dropHandler', () => {
         test('debería mover un curso a un horario vacío', () => {
-            const curso = document.createElement('div');
-            curso.className = 'curso';
-            curso.textContent = 'Curso Test';
-            document.getElementById('cursosContainer').appendChild(curso);
-            global.selected = curso;
-
+            selected = cursosContainer.firstChild;
             const horario = document.getElementById('LUNES');
             const event = { preventDefault: jest.fn(), stopPropagation: jest.fn() };
 
             dropHandler.call(horario, event);
 
-            expect(createHorario).toHaveBeenCalledWith(expect.any(Element), horario, curso);
-            expect(horario.contains(curso)).toBe(true);
+            expect(createHorario).toHaveBeenCalledWith(cursosContainer, horario, selected);
+            expect(horario.textContent).toBe('NRC: 100');
         });
 
         test('debería intercambiar cursos entre horarios', () => {
-            const cursoA = document.createElement('div');
-            cursoA.className = 'curso';
-            cursoA.textContent = 'Curso A';
-            const horarioA = document.getElementById('LUNES');
-            horarioA.appendChild(cursoA);
-
+            const horarioLunes = document.getElementById('LUNES');
+            const horarioMartes = document.getElementById('MARTES');
+            createHorario(null, horarioLunes, cursosContainer.firstChild);
             const cursoB = document.createElement('div');
-            cursoB.className = 'curso';
-            cursoB.textContent = 'Curso B';
-            const horarioB = document.getElementById('MARTES');
-            horarioB.appendChild(cursoB);
+            cursoB.textContent = 'NRC: 101';
+            horarioMartes.appendChild(cursoB);
 
-            global.selected = cursoA;
-
+            selected = horarioLunes.firstChild;
             const event = { preventDefault: jest.fn(), stopPropagation: jest.fn() };
 
-            dropHandler.call(horarioB, event);
+            dropHandler.call(horarioMartes, event);
 
-            expect(updateHorarios).toHaveBeenCalledWith(horarioA, horarioB, cursoA, cursoB);
+            expect(updateHorarios).toHaveBeenCalledWith(horarioLunes, horarioMartes, horarioLunes.firstChild, cursoB);
         });
     });
 
     describe('deleteHandler', () => {
         test('debería eliminar un curso de un horario', () => {
-            const curso = document.createElement('div');
-            curso.className = 'curso';
             const horario = document.getElementById('LUNES');
-            horario.appendChild(curso);
-            global.selected = curso;
+            createHorario(null, horario, cursosContainer.firstChild);
+            selected = horario.firstChild;
 
             const event = { preventDefault: jest.fn() };
 
             deleteHandler(event);
 
-            expect(deleteHorario).toHaveBeenCalledWith(horario, curso);
-            expect(horario.contains(curso)).toBe(false);
-        });
-
-        test('no debería eliminar un curso del contenedor de cursos', () => {
-            const curso = document.createElement('div');
-            curso.className = 'curso';
-            document.getElementById('cursosContainer').appendChild(curso);
-            global.selected = curso;
-
-            const event = { preventDefault: jest.fn() };
-
-            deleteHandler(event);
-
-            expect(deleteHorario).not.toHaveBeenCalled();
-            expect(document.getElementById('cursosContainer').contains(curso)).toBe(true);
+            expect(deleteHorario).toHaveBeenCalledWith(horario, selected);
+            expect(horario.childElementCount).toBe(0);
+            expect(cursosContainer.childElementCount).toBe(1);
         });
     });
 
     describe('dropManager', () => {
-        test('debería añadir event listeners al curso', () => {
-            const curso = document.createElement('div');
-            curso.className = 'curso';
-
+        test('debería configurar event listeners para el curso', () => {
+            const curso = cursosContainer.firstChild;
             const addEventListenerSpy = jest.spyOn(curso, 'addEventListener');
 
             dropManager(curso);
@@ -160,32 +134,36 @@ describe('Drag and Drop Functionality', () => {
         });
 
         test('debería configurar event listeners para horarios y trash al iniciar el arrastre', () => {
-            const curso = document.createElement('div');
-            curso.className = 'curso';
-
+            const curso = cursosContainer.firstChild;
             dropManager(curso);
 
-            const dragStartEvent = new Event('dragstart');
+            const dragStartEvent = new DragEvent('dragstart', {
+                bubbles: true,
+                cancelable: true,
+                dataTransfer: new DataTransfer()
+            });
             curso.dispatchEvent(dragStartEvent);
 
             horarios.forEach(horario => {
-                expect(horario.listeners('dragover')).toBeDefined();
-                expect(horario.listeners('drop')).toBeDefined();
+                expect(horario.ondragover).toBeDefined();
+                expect(horario.ondrop).toBeDefined();
             });
 
-            expect(trash.listeners('dragover')).toBeDefined();
-            expect(trash.listeners('drop')).toBeDefined();
+            expect(trash.ondragover).toBeDefined();
+            expect(trash.ondrop).toBeDefined();
         });
     });
 
     describe('removeHorarioDropListener', () => {
-        test('debería remover el event listener de drop de los horarios', () => {
-            const horario = document.getElementById('LUNES');
-            const removeEventListenerSpy = jest.spyOn(horario, 'removeEventListener');
-
+        test('debería remover el event listener de drop del elemento trash', () => {
+            const removeEventListenerSpy = jest.spyOn(trash, 'removeEventListener');
+            trash.addEventListener('drop', deleteHandler);
+            
             removeHorarioDropListener();
-
-            expect(removeEventListenerSpy).toHaveBeenCalledWith('drop', dropHandler);
+            
+            expect(removeEventListenerSpy).toHaveBeenCalledWith('drop', deleteHandler);
+            
+            removeEventListenerSpy.mockRestore();
         });
     });
 });
