@@ -23,8 +23,12 @@
 <section class="pt-5">
     <div class="container-fluid">
         <h1>Detalles de perfiles</h1>
+        <h2></h2>
         <div class="d-flex justify-content-end align-items-center mb-5">
-            <a href="perfiles-create.php" class="btn btn-success mr-3"><i class='bx bx-sm bx-plus'></i> Nuevo
+            <a <?php if (!in_array("crear", $privilegios)) {
+                echo 'style="display: none;"';
+            } ?> href="perfiles-create.php"
+                class="btn btn-success mr-3"><i class='bx bx-sm bx-plus'></i> Nuevo
                 registro</a>
             <a href="perfiles-index.php" class="btn btn-info mr-3">Actualizar</a>
             <a href="index.php" class="btn btn-secondary"><i class='bx bx-sm bx-arrow-back'></i> Atrás</a>
@@ -39,7 +43,7 @@
                 </div>
             </form>
         </div>
-        
+
         <br>
 
         <?php
@@ -94,12 +98,12 @@
         if (!empty($_GET['search'])) {
             $search = ($_GET['search']);
             $sql = "SELECT * FROM perfiles
-                            WHERE CONCAT_WS (id_perfil,tipo_perfil,privilegios)
+                            WHERE CONCAT_WS (id_perfil,tipo_perfil,privilegios,funciones)
                             LIKE '%$search%'
                             ORDER BY $order $sort
                             LIMIT $offset, $no_of_records_per_page";
             $count_pages = "SELECT * FROM perfiles
-                            WHERE CONCAT_WS (id_perfil,tipo_perfil,privilegios)
+                            WHERE CONCAT_WS (id_perfil,tipo_perfil,privilegios,funciones)
                             LIKE '%$search%'
                             ORDER BY $order $sort";
         } else {
@@ -123,6 +127,7 @@
                 echo "<th><a href=?search=$search&sort=&order=id_perfil&sort=$sort>ID Perfil</th>";
                 echo "<th><a href=?search=$search&sort=&order=tipo_perfil&sort=$sort>Tipo de perfil</th>";
                 echo "<th><a href=?search=$search&sort=&order=privilegios&sort=$sort>Privilegios</th>";
+                echo "<th><a href=?search=$search&sort=&order=funciones&sort=$sort>Funciones</th>";
 
                 echo "<th>Acción</th>";
                 echo "</tr>";
@@ -133,10 +138,21 @@
                     echo "<td>" . htmlspecialchars($row['id_perfil']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['tipo_perfil']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['privilegios']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['funciones']) . "</td>";
                     echo "<td>";
-                    echo "<a href='perfiles-read.php?id_perfil=" . $row['id_perfil'] . "' title='Ver Registro' data-toggle='tooltip'><i class='far fa-eye'></i></a>";
-                    echo "<a href='perfiles-update.php?id_perfil=" . $row['id_perfil'] . "' title='Actualizar Registro' data-toggle='tooltip'><i class='far fa-edit'></i></a>";
-                    echo "<a href='perfiles-delete.php?id_perfil=" . $row['id_perfil'] . "' title='Eliminar Registro' data-toggle='tooltip'><i class='far fa-trash-alt'></i></a>";
+
+                    if (in_array("seleccionar", $privilegios)) {
+                        echo "<a href='perfiles-read.php?id_perfil=" . $row['id_perfil'] . "' title='Ver Registro' data-toggle='tooltip'><i class='far fa-eye'></i></a>";
+                    }
+
+                    if (in_array("modificar", $privilegios)) {
+                        echo "<a href='perfiles-update.php?id_perfil=" . $row['id_perfil'] . "' title='Actualizar Registro' data-toggle='tooltip'><i class='far fa-edit'></i></a>";
+                    }
+
+                    if (in_array("eliminar", $privilegios)) {
+                        echo "<a href='perfiles-delete.php?id_perfil=" . $row['id_perfil'] . "' title='Eliminar Registro' data-toggle='tooltip'><i class='far fa-trash-alt'></i></a>";
+                    }
+
                     echo "</td>";
                     echo "</tr>";
                 }
@@ -159,7 +175,7 @@
                             echo '#';
                         } else {
                             echo $new_url . "&pageno=" . ($pageno - 1);
-                        } ?>"><</a>
+                        } ?>">Ant</a>
                     </li>
                     <li class="page-item <?php if ($pageno >= $total_pages) {
                         echo 'disabled';
@@ -168,7 +184,7 @@
                             echo '#';
                         } else {
                             echo $new_url . "&pageno=" . ($pageno + 1);
-                        } ?>">></a>
+                        } ?>">Sig</a>
                     </li>
                     <li class="page-item <?php if ($pageno >= $total_pages) {
                         echo 'disabled';

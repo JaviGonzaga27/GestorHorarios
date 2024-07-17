@@ -61,6 +61,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Crear registro</title>
+    <style>
+        .cajaOverLoad {
+            overflow: auto;
+            max-height: 200px;
+            width: 50%;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 5px;
+            padding-left: 20px;
+        }
+    </style>
 </head>
 
 <?php include('header.php'); ?>
@@ -129,6 +140,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <select class="form-control" id="id_docente" name="id_docente">
                             <option value="0,0">No asignado</option>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Carreras Asignadas al NRC</label><br>
+                        <div class="cajaOverLoad">
+                            <?php
+                            $sql_horarios = "SELECT id_carrera, nombre_carrera FROM carreras";
+                            $result_horarios = mysqli_query($link, $sql_horarios);
+                            // Mostrar checkboxes con los horarios disponibles
+                            if ($result_horarios->num_rows > 0) {
+                                while ($row = $result_horarios->fetch_assoc()) {
+                                    echo '<input type="checkbox" name="horarios[]" value="' . $row["id_carrera"] . '"> ' . $row["nombre_carrera"] . '<br>';
+                                }
+                            } else {
+                                echo "No hay horarios disponibles.";
+                            }
+                            ?>
+                        </div>
+                        <div class="invalid-feedback"></div>
+                        <div class="valid-feedback"></div>
                     </div>
 
                     <input type="submit" class="btn btn-primary" value="Enviar">

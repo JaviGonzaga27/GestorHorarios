@@ -4,10 +4,27 @@
         <div class="sidebar-brand-icon">
             <i class="fas fa-user"></i>
         </div>
-        <div class="sidebar-brand-text mx-3"><span id="usuarioNombre"></span></div>
+        <div class="sidebar-brand-text mx-3">
+            <div class="sidebar-brand-text-light">
+            <?php
+                session_start();
+                if (isset($_SESSION['user_name'])) {
+                    $user_log = $_SESSION['user_name'];
+                    $priv = $_SESSION['privilegios'];
+                    $privilegios = explode(" ", $priv);
+                    $func = $_SESSION['funciones'];
+                    $funciones = explode(' ', $func);
+                    echo "$user_log";
+                } else {
+                    header('location: ../index.html');
+                }
+            ?>
+            </div>
+        </div>
     </a>
 
     <hr class="sidebar-divider my-4">
+    
 
     <li class="nav-item active">
         <a class="nav-link" href="index.php">
@@ -17,6 +34,8 @@
     </li>
 
     <hr class="sidebar-divider">
+
+    <div <?php if (!in_array("perfiles", $funciones) && !in_array("usuarios", $funciones) && !in_array("docentes", $funciones)){echo 'style="display: none;"';}?>>
 
     <div class="sidebar-heading">
         Usuarios y Perfiles
@@ -30,53 +49,47 @@
         </a>
         <div id="collapseUsuarios" class="collapse" aria-labelledby="headingUsuarios" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="perfiles-index.php">Perfiles de usuarios</a>
-                <a class="collapse-item" href="usuarios-index.php">Usuarios</a>
-                <a class="collapse-item" href="docentes-index.php">Docentes</a>
+                <a <?php if (!in_array("perfiles", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="perfiles-index.php">Perfiles de usuarios</a>
+                <a <?php if (!in_array("usuarios", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="usuarios-index.php">Usuarios</a>
+                <a <?php if (!in_array("docentes", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="docentes-index.php">Docentes</a>
             </div>
         </div>
     </li>
 
     <hr class="sidebar-divider">
+    </div>
 
+    <div <?php if (!in_array("periodos", $funciones)){echo 'style="display: none;"';}?>>
     <div class="sidebar-heading">
         Interfaz Periodo
     </div>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePeriodo"
-            aria-expanded="true" aria-controls="collapsePeriodo">
+        <a class="nav-link" href="periodos-index.php">
             <i class='bx bx-sm bx-detail'></i>
             <span>Gestionar Periodos</span>
         </a>
-        <div id="collapsePeriodo" class="collapse" aria-labelledby="headingPeriodo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="periodos-index.php">Periodo</a>
-            </div>
-        </div>
     </li>
 
     <hr class="sidebar-divider">
+    </div>
 
+    <div <?php if (!in_array("carreras", $funciones)){echo 'style="display: none;"';}?>>
     <div class="sidebar-heading">
         Interfaz Carreras
     </div>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCarreras"
-            aria-expanded="true" aria-controls="collapseCarreras">
+        <a class="nav-link" href="carreras-index.php">
             <i class='bx bx-sm bx-buildings'></i>
             <span>Gestionar Carreras</span>
         </a>
-        <div id="collapseCarreras" class="collapse" aria-labelledby="headingCarreras" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="carreras-index.php">Carreras</a>
-                <a class="collapse-item" href="carreras_cursos-index.php">Carreras por curso</a>
-            </div>
-        </div>
     </li>
 
     <hr class="sidebar-divider">
+    </div>
+
+    <div <?php if (!in_array("materias", $funciones) && !in_array("aulas", $funciones) && !in_array("nrc", $funciones)){echo 'style="display: none;"';}?>>
 
     <div class="sidebar-heading">
         Interfaz General
@@ -90,18 +103,20 @@
         </a>
         <div id="collapseGeneral" class="collapse" aria-labelledby="headingGeneral" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="materias-index.php">Materias</a>
-                <a class="collapse-item" href="aulas-index.php">Aulas</a>
-                <a class="collapse-item" href="cursos-index.php">Cursos</a>
-                <a class="collapse-item" href="novedades-index.php">Novedades de Aulas</a>
+                <a <?php if (!in_array("materias", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="materias-index.php">Materias</a>
+                <a <?php if (!in_array("aulas", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="aulas-index.php">Aulas</a>
+                <a <?php if (!in_array("nrc", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="cursos-index.php">NRC's</a>
             </div>
         </div>
     </li>
 
     <hr class="sidebar-divider">
+    </div>
+
+    <div <?php if (!in_array("franja_horaria", $funciones) && !in_array("gestor_horarios", $funciones)){echo 'style="display: none;"';}?>>
 
     <div class="sidebar-heading">
-        Horario
+        Interfaz Horario
     </div>
 
     <li class="nav-item">
@@ -113,12 +128,35 @@
         <div id="collapseHorario" class="collapse" aria-labelledby="headingHorario"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="horarios-index.php">Franjas Horarias</a>
-                <a class="collapse-item" href="horarios_aulas_cursos-index.php">Horarios de cursos</a>
-                <a class="collapse-item" href="horariosDragDrop.php">Gestor de Horarios UI</a>
+                <a <?php if (!in_array("franja_horaria", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="horarios-index.php">Franjas Horarias</a>
+                <a <?php if (!in_array("gestor_horarios", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="horariosDragDrop.php">Gestor de Horarios UI</a>
             </div>
         </div>
     </li>
+
+    <hr class="sidebar-divider">
+    </div>
+
+    <div <?php if (!in_array("horarios_docentes", $funciones) && !in_array("novedades", $funciones)){echo 'style="display: none;"';}?>>
+
+    <div class="sidebar-heading">
+        Interfaz de Reportes
+    </div>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReportes"
+            aria-expanded="true" aria-controls="collapseReportes">
+            <i class='bx bx-sm bxs-user-detail'></i>
+            <span>Reportes</span>
+        </a>
+        <div id="collapseReportes" class="collapse" aria-labelledby="headingReportes" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+            <a <?php if (!in_array("horarios_docentes", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="horariosDocente.php">Horarios de Docentes</a>
+            <a <?php if (!in_array("novedades", $funciones)){echo 'style="display: none;"';}?> class="collapse-item" href="novedades-index.php">Novedades de Aulas</a>
+            </div>
+        </div>
+    </li>
+    </div>
 
     <hr class="sidebar-divider d-none d-md-block">
 

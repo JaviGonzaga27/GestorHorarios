@@ -24,7 +24,10 @@
     <div class="container-fluid">
         <h1>Detalles de Docentes</h1>
         <div class="d-flex justify-content-end align-items-center mb-5">
-            <a href="docentes-create.php" class="btn btn-success mr-3"><i class='bx bx-sm bx-plus'></i> Nuevo registro</a>
+            <a <?php if (!in_array("crear", $privilegios)) {
+                echo 'style="display: none;"';
+            } ?> href="docentes-create.php"
+                class="btn btn-success mr-3"><i class='bx bx-sm bx-plus'></i> Nuevo registro</a>
             <a href="docentes-index.php" class="btn btn-info mr-3">Actualizar</a>
             <a href="index.php" class="btn btn-secondary"><i class='bx bx-sm bx-arrow-back'></i> Atrás</a>
         </div>
@@ -69,7 +72,7 @@
         $total_pages = ceil($total_rows / $no_of_records_per_page);
 
         //Column sorting on column name
-        $orderBy = array('id_docente','cod_usuario', 'nombre', 'horas_disponibles', 'correo', 'estado');
+        $orderBy = array('id_docente', 'cod_usuario', 'nombre', 'horas_disponibles', 'correo', 'estado');
         $order = 'id_docente';
         if (isset($_GET['order']) && in_array($_GET['order'], $orderBy)) {
             $order = $_GET['order'];
@@ -98,7 +101,7 @@
                 JOIN 
                     usuarios u ON u.id_usuario = d.id_usuario
                 ORDER BY $order $sort LIMIT $offset, $no_of_records_per_page";
-                $count_pages = "SELECT * FROM docentes";
+        $count_pages = "SELECT * FROM docentes";
 
         if (!empty($_GET['search'])) {
             $search = ($_GET['search']);
@@ -167,9 +170,19 @@
                     echo "<td>" . htmlspecialchars($row['correo']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['estado']) . "</td>";
                     echo "<td>";
-                    echo "<a href='docentes-read.php?id_docente=" . $row['id_docente'] . "' title='Ver Registro' data-toggle='tooltip'><i class='far fa-eye'></i></a>";
-                    echo "<a href='docentes-update.php?id_docente=" . $row['id_docente'] . "' title='Actualizar Registro' data-toggle='tooltip'><i class='far fa-edit'></i></a>";
-                    echo "<a href='docentes-delete.php?id_docente=" . $row['id_docente'] . "' title='Eliminar Registro' data-toggle='tooltip'><i class='far fa-trash-alt'></i></a>";
+
+                    if (in_array("seleccionar", $privilegios)) {
+                        echo "<a href='docentes-read.php?id_docente=" . $row['id_docente'] . "' title='Ver Registro' data-toggle='tooltip'><i class='far fa-eye'></i></a>";
+                    }
+
+                    if (in_array("modificar", $privilegios)) {
+                        echo "<a href='docentes-update.php?id_docente=" . $row['id_docente'] . "' title='Actualizar Registro' data-toggle='tooltip'><i class='far fa-edit'></i></a>";
+                    }
+
+                    if (in_array("eliminar", $privilegios)) {
+                        echo "<a href='docentes-delete.php?id_docente=" . $row['id_docente'] . "' title='Eliminar Registro' data-toggle='tooltip'><i class='far fa-trash-alt'></i></a>";
+                    }
+
                     echo "</td>";
                     echo "</tr>";
                 }
@@ -192,7 +205,7 @@
                             echo '#';
                         } else {
                             echo $new_url . "&pageno=" . ($pageno - 1);
-                        } ?>"><</a>
+                        } ?>">Ant</a>
                     </li>
                     <li class="page-item <?php if ($pageno >= $total_pages) {
                         echo 'disabled';
@@ -201,7 +214,7 @@
                             echo '#';
                         } else {
                             echo $new_url . "&pageno=" . ($pageno + 1);
-                        } ?>">></a>
+                        } ?>">Sig</a>
                     </li>
                     <li class="page-item <?php if ($pageno >= $total_pages) {
                         echo 'disabled';
