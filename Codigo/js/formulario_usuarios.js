@@ -11,8 +11,8 @@ formulario.addEventListener('submit', function(e) {
     if(formulario.checkValidaty() && validarID_usuario() && validarNombre() && validarApellido() && validarUsuario() && validarClave()) {
         return true;
     } else {
-        event.preventDefault();
-        event.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
     }
 
     formulario.classList.add('was-validated');
@@ -52,8 +52,6 @@ function validarNombre() {
         return true;
     }
 }
-
-
 
 function validarApellido() {
     var ape = apellido.value;
@@ -134,3 +132,13 @@ nombre.addEventListener('input', validarNombre);
 apellido.addEventListener('input', validarApellido);
 usuario.addEventListener('input', validarUsuario);
 clave.addEventListener('input', validarClave);
+
+if(typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        validarID_usuario,
+        validarNombre,
+        validarApellido,
+        validarUsuario,
+        validarClave
+    };
+}

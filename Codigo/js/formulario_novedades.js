@@ -32,3 +32,7 @@ function validarDescripcion() {
 }
 
 descripcion_input.addEventListener('input', validarDescripcion);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { validarDescripcion };
+}

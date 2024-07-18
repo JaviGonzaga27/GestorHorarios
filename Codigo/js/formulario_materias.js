@@ -74,3 +74,11 @@ function validarHoras_semana() {
 cod_materia_input.addEventListener('input', validarCod_materia);
 nombre_input.addEventListener('input', validarNombre);
 horas_semana_input.addEventListener('input', validarHoras_semana);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        validarCod_materia,
+        validarNombre,
+        validarHoras_semana
+    };
+}

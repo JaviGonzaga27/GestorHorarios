@@ -51,3 +51,7 @@ function validarHora_fin() {
 
 hora_fin_input.addEventListener('input', validarHora_fin);
 hora_inicio_input.addEventListener('input', validarHora_inicio);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { validarHora_inicio, validarHora_fin };
+}
