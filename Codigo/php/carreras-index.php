@@ -192,8 +192,12 @@
     </div>
 </section>
 <script type="text/javascript">
-    $(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof $ !== 'undefined') {
         $('[data-toggle="tooltip"]').tooltip();
-    });
+    } else {
+        console.error('jQuery no está cargado');
+    }
+});
 </script>
 <?php include('footer.php'); ?>

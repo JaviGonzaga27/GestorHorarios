@@ -6,12 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horarios UI</title>
     <link rel="stylesheet" href="../css/estiloHorarioSemanal.css">
-
 </head>
 
-
 <?php include('header.php'); ?>
-<section class="pt-5">
+<section class="pt-2">
 <div class="container-fluid">
     <div class="position-absolute ocultar-en-pantalla" style="right: 3%;">
         <button id="GenerarMysql" onclick="generarPDF()" class="btn btn-secondary mr-3 ocultarPDF">Generar Reporte</button>
@@ -39,9 +37,7 @@
         <div class="container">
             <div class="cursosSection ocultarPDF">
                 <div class="tituloDia">INFO CURSO</div>
-                <div id="cursosContainer">
-
-                </div>
+                <div id="cursosContainer"></div>
                 <div id="trash">ARRASTRA AQUÍ PARA ELIMINAR HORARIO</div>
             </div>
             <div class="horarioSection">
@@ -55,7 +51,6 @@
                     <div class="hora">17:30 - 19:30 h</div>
                     <div class="hora">19:30 - 21:30 h</div>
                 </div>
-
             </div>
             <div class="diasSection">
                 <div class="tituloDia">LUNES</div>
@@ -77,7 +72,6 @@
                 <div class="tituloDia">VIERNES</div>
                 <div class="dia" id="VIERNES"></div>
             </div>
-
         </div>
     </div>
 </div>

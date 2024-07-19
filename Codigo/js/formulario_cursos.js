@@ -3,14 +3,13 @@ var formulario = document.getElementById('agregar_curso');
 var nrc_input = document.getElementById('nrc');
 
 formulario.addEventListener('submit', function(e) {
-    if(formulario.checkValidity() && validarNRC()) {
-        return true;
-    } else {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+    e.preventDefault(); // Siempre prevenir el envío por defecto
 
-    formulario.classList.add('was-validated');
+    if (validarNRC()) {
+        formulario.submit(); // Enviar el formulario si todo es válido
+    } else {
+        formulario.classList.add('was-validated');
+    }
 });
 
 function validarNRC() {
@@ -30,5 +29,10 @@ function validarNRC() {
     }
 }
 
-
 nrc_input.addEventListener('input', validarNRC);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        validarNRC
+    };
+}

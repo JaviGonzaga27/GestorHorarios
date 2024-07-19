@@ -62,21 +62,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="form-group">
                         <label>Código Aula</label>
-                        <input type="text" id="cod_aula" name="cod_aula" maxlength="7"class="form-control" value="<?php echo $cod_aula; ?>">
+                        <input type="text" id="cod_aula" name="cod_aula" maxlength="7" class="form-control" value="<?php echo $cod_aula; ?>">
                         <div class="invalid-feedback"></div>
                         <div class="valid-feedback"></div>
                     </div>
 
                     <div class="form-group">
                         <label>Capacidad</label>
-                        <input type="number" id="capacidad" name="capacidad" class="form-control" value="25" max="40">
+                        <input type="number" id="capacidad" name="capacidad" class="form-control">
                         <div class="invalid-feedback"></div>
                         <div class="valid-feedback"></div>
                     </div>
 
 					<div class="form-group">
                         <label>Bloque</label>
-                        <input type="text" id="bloque" name="bloque" maxlength="1" class="form-control" value="<?php echo $bloque; ?>">
+                        <input type="text" id="bloque" name="bloque" class="form-control" value="<?php echo $bloque; ?>">
                         <div class="invalid-feedback"></div>
                         <div class="valid-feedback"></div>
                     </div>

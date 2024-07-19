@@ -6,14 +6,13 @@ var capacidad_input = document.getElementById('capacidad');
 var bloque_input = document.getElementById('bloque');
 
 formulario.addEventListener('submit', function(e) {
-    if(formulario.checkValidity() && validarcod_aula() && validarCapacidad() && validarBloque()) {
-        return true;
+    e.preventDefault(); // Siempre prevenir el envío por defecto
+    
+    if(validarcod_aula() && validarCapacidad() && validarBloque()) {
+        formulario.submit(); // Enviar el formulario si todo es válido
     } else {
-        event.preventDefault();
-        event.stopPropagation();
+        formulario.classList.add('was-validated');
     }
-
-    formulario.classList.add('was-validated');
 });
 
 function validarcod_aula() {
@@ -71,3 +70,11 @@ function validarBloque() {
 cod_aula_input.addEventListener('input', validarcod_aula);
 capacidad_input.addEventListener('input', validarCapacidad);
 bloque_input.addEventListener('input', validarBloque);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        validarcod_aula,
+        validarCapacidad,
+        validarBloque
+    };
+}

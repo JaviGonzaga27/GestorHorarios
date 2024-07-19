@@ -48,7 +48,7 @@ function removeHorarioDropListener() {
   trash.removeEventListener("drop", deleteHandler);
 }
 
-function removeHorarioDropListener() {
+function removeHorarioDropListener1() {
   horario.removeEventListener("drop", dropHandler);
 }
 
@@ -76,7 +76,15 @@ function dropManager(curso) {
     });
 
     trash.addEventListener("drop", deleteHandler);
-
-
   });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    dropHandler,
+    deleteHandler,
+    removeHorarioDropListener,
+    removeHorarioDropListener1,
+    dropManager,
+  };
 }
