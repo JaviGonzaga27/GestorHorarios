@@ -51,3 +51,7 @@ function validarPrivilegios() {
 
 privilegios_input.addEventListener('input', validarPrivilegios);
 tipo_perfil_input.addEventListener('input', validarTipo_perfil);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { validarTipo_perfil, validarPrivilegios };
+}

@@ -91,3 +91,7 @@ function validarFechaInicio() {
 nombre_periodo_input.addEventListener('input', validarNombrePeriodo);
 fecha_inicio_input.addEventListener('input', validarFechaInicio);
 fecha_fin_input.addEventListener('input', validarFechaFin);
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { validarNombrePeriodo, validarFechaInicio, validarFechaFin };
+}

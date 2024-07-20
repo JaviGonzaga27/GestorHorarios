@@ -97,6 +97,20 @@ function validarCelular() {
 }
 
 function validarCedula() {
+    // Función para mostrar mensaje de error
+    function mostrarError(mensaje) {
+        cedula_input.nextElementSibling.innerHTML = mensaje;
+        cedula_input.classList.add("is-invalid");
+        cedula_input.classList.remove("is-valid");
+    }
+
+    // Función para mostrar mensaje de éxito
+    function mostrarExito(mensaje) {
+        //cedula_input.nextElementSibling.innerHTML = mensaje;
+        cedula_input.classList.remove("is-invalid");
+        cedula_input.classList.add("is-valid");
+    }
+
     var cedula = cedula_input.value;
     const regexCedula = /^[0-9]{10}$/;
 
@@ -133,7 +147,7 @@ function validarCedula() {
 
     // Obtener el dígito verificador
     var digitoVerificador =
-        total % 10 != 0 ? total - (total % 10) + 10 - total : 0;
+        total % 10 != 0 ? 10 - (total % 10) : 0;
 
     // Validar dígito verificador
     if (digitoVerificador != parseInt(cedula.charAt(9))) {
@@ -142,22 +156,8 @@ function validarCedula() {
     }
 
     // La cédula es válida
-    //mostrarExito("Cédula válida");
+    mostrarExito("Cédula válida");
     return true;
-
-    // Función para mostrar mensaje de error
-    function mostrarError(mensaje) {
-        cedula_input.nextElementSibling.innerHTML = mensaje;
-        cedula_input.classList.add("is-invalid");
-        cedula_input.classList.remove("is-valid");
-    }
-
-    // Función para mostrar mensaje de éxito
-    function mostrarExito(mensaje) {
-        //cedula_input.nextElementSibling.innerHTML = mensaje;
-        cedula_input.classList.remove("is-invalid");
-        cedula_input.classList.add("is-valid");
-    }
 }
 
 horas_disponibles_input.addEventListener("input", validarHoras_disponibles);
